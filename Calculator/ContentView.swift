@@ -31,7 +31,7 @@ struct ContentView: View {
                 HStack {
                     Spacer()
                     
-                    Text(value)
+                    Text(getValue())
                         .font(.system(size: 100))
                         .minimumScaleFactor(0.5)
                         .lineLimit(1)
@@ -65,11 +65,13 @@ struct ContentView: View {
     }
     
     private func getValue() -> String {
-        let formatter = NumberFormatter()
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 2
+        var response = value
         
-        return formatter.string(from: NSNumber(value: Double(value) ?? 0)) ?? "0"
+        if value.last != "." {
+            response = cleanDouble(number: Double(value) ?? 0)
+        }
+        
+        return response
     }
     
     private func didTap(button: Buttons) {
@@ -115,9 +117,18 @@ struct ContentView: View {
         case .clear:
             value = "0"
         case .decimal:
-            value = "\(value)."
+            if value.last != "." && !value.contains(".") {
+                value = "\(cleanDouble(number: Double(value) ?? 0))."
+            }
         case .negative:
-            break
+            print("here")
+            if Double(value) ?? 0 < 0 {
+                let valuePositive = abs(Double(value) ?? 0)
+                value = String(valuePositive)
+            } else {
+                let valueNegative = (Double(value) ?? 0)  * -1
+                value = String(valueNegative)
+            }
         default:
             let number = button.rawValue
             
@@ -139,6 +150,14 @@ struct ContentView: View {
     
     private func buttonHeight() -> CGFloat {
         return (UIScreen.main.bounds.width - (5 * 12)) / 4
+    }
+    
+    private func cleanDouble(number: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 2
+        
+        return formatter.string(from: NSNumber(value: number)) ?? "0"
     }
 }
 
