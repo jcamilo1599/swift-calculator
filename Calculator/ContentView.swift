@@ -30,11 +30,15 @@ struct ContentView: View {
                 // Text display
                 HStack {
                     Spacer()
+                    
                     Text(value)
                         .font(.system(size: 100))
+                        .minimumScaleFactor(0.5)
+                        .lineLimit(1)
                         .foregroundColor(.white)
                 }
                 .padding()
+                .padding(.bottom, 10)
                 
                 // Our buttons
                 ForEach(buttons, id: \.self) { row in
