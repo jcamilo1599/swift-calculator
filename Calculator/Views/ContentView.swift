@@ -43,18 +43,22 @@ struct ContentView: View {
                 // Our buttons
                 ForEach(buttons, id: \.self) { row in
                     HStack(spacing: 12) {
+                        if UIDevice.current.userInterfaceIdiom == .pad {
+                            Spacer()
+                        }
+                        
                         ForEach(row, id: \.self) { item in
                             Button(action: {
-                                self.didTap(button: item)
+                                didTap(button: item)
                             }, label: {
                                 item.buildView
                                     .frame(
-                                        width: self.buttonWidth(item: item),
-                                        height: self.buttonHeight()
+                                        width: buttonWidth(item: item),
+                                        height: buttonHeight()
                                     )
                                     .background(item.color)
                                     .foregroundColor(.white)
-                                    .cornerRadius(self.buttonWidth(item: item)/2)
+                                    .cornerRadius(buttonWidth(item: item) / 2)
                             })
                         }
                     }
@@ -141,15 +145,22 @@ struct ContentView: View {
     }
     
     private func buttonWidth(item: Buttons) -> CGFloat {
+        var response: CGFloat
+        let base = UIDevice.current.userInterfaceIdiom == .pad ? 500 : UIScreen.main.bounds.width
+        
         if item == .equal {
-            return ((UIScreen.main.bounds.width - (4 * 12)) / 4) * 2
+            response = ((base - (4 * 12)) / 4) * 2
+        } else {
+            response = (base - (5 * 12)) / 4
         }
         
-        return (UIScreen.main.bounds.width - (5 * 12)) / 4
+        return response
     }
     
     private func buttonHeight() -> CGFloat {
-        return (UIScreen.main.bounds.width - (5 * 12)) / 4
+        let base = UIDevice.current.userInterfaceIdiom == .pad ? 500 : UIScreen.main.bounds.width
+        
+        return (base - (5 * 12)) / 4
     }
     
     private func cleanDouble(number: Double) -> String {
